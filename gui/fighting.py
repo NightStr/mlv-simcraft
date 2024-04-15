@@ -72,6 +72,7 @@ class App:
             self.thread.start()
             self.start_button.config(text="Stop Simulation")
         else:
+            self.progress['value'] = 0
             self.running = False
             self.start_button.config(text="Start Simulation")
 
