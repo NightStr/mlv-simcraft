@@ -7,12 +7,12 @@ from tqdm import tqdm
 from core import sec_to_time
 
 
-class SimResult(NamedTuple):
+class ThievingSimResult(NamedTuple):
     time: int
     money_earned: int
 
 
-class SimConfig(NamedTuple):
+class ThievingSimConfig(NamedTuple):
     health_regeneration_interval: int  # in seconds
     health_regeneration_amount: int
     max_health: int
@@ -24,7 +24,7 @@ class SimConfig(NamedTuple):
     max_gold: int
 
 
-def sim(config: SimConfig) -> SimResult:
+def sim(config: ThievingSimConfig) -> ThievingSimResult:
     # Variables
     current_health = config.max_health
     gold_earn = 0
@@ -53,11 +53,36 @@ def sim(config: SimConfig) -> SimResult:
 
         # Increment time
         time += decimal.Decimal('0.1')
-    return SimResult(time, gold_earn)
+    return ThievingSimResult(time, gold_earn)
+
+
+def format_thieve_results(results: list[ThievingSimResult]) -> str:
+    sims_seconds = [s.time for s in results]
+    sims_money_earned = [s.money_earned for s in results]
+
+    mean_time = sec_to_time(int(sum(sims_seconds) / len(sims_seconds)))
+    mean_money_earned = int(sum(sims_money_earned) / len(sims_money_earned))
+
+    min_mean_time = sec_to_time(int(sum(sorted(sims_seconds)[:100]) / 100))
+    min_money_earned = int(sum(sorted(sims_money_earned)[:100]) / 100)
+
+    max_mean_time = sec_to_time(int(sum(list(reversed(sorted(sims_seconds)))[:100]) / 100))
+    max_money_earned = int(sum(list(reversed(sorted(sims_money_earned)))[:100]) / 100)
+
+    # Очистка виджета вывода и вывод результатов
+    return (
+        f"Mean time: {mean_time}\n" +
+        f"Max mean time: {max_mean_time}\n" +
+        f"Min mean time: {min_mean_time}\n" +
+        ("-" * 20) + "\n" +
+        f"Mean money earned: {mean_money_earned}\n" +
+        f"Max money earned: {max_money_earned}\n" +
+        f"Min money earned: {min_money_earned}"
+    )
 
 
 if __name__ == '__main__':
-    config = SimConfig(
+    config = ThievingSimConfig(
         health_regeneration_interval=8,  # in seconds
         health_regeneration_amount=8,
         max_health=720,
@@ -71,23 +96,4 @@ if __name__ == '__main__':
     sims = []
     for _ in tqdm(range(5_000), desc="Simulations"):
         sims.append(sim(config))
-
-    sims_seconds = [s.time for s in sims]
-    sims_money_earned = [s.money_earned for s in sims]
-
-    mean_time = sec_to_time(int(sum(sims_seconds) / len(sims_seconds)))
-    mean_money_earned = int(sum(sims_money_earned) / len(sims_money_earned))
-
-    min_mean_time = sec_to_time(int(sum(sorted(sims_seconds)[:100]) / 100))
-    min_money_earned = int(sum(sorted(sims_money_earned)[:100]) / 100)
-
-    max_mean_time = sec_to_time(int(sum(list(reversed(sorted(sims_seconds)))[:100]) / 100))
-    max_money_earned = int(sum(list(reversed(sorted(sims_money_earned)))[:100]) / 100)
-
-    print(f"Mean time: {mean_time}")
-    print(f"Max mean time: {max_mean_time}")
-    print(f"Min mean time: {min_mean_time}")
-    print("-"*20)
-    print(f"Mean money earned: {mean_money_earned}")
-    print(f"Max money earned: {max_money_earned}")
-    print(f"Min money earned: {min_money_earned}")
+    print(format_thieve_results(sims))
