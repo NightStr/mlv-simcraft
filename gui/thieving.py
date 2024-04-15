@@ -15,11 +15,11 @@ class App:
         ("Health Regeneration Amount", "8"),
         ("Max Health", "720"),
         ("Steal Interval", "2.6"),
-        ("Steal Success Chance", "97"),
+        ("Steal Success Chance", "57"),
         ("Min Damage", "0"),
-        ("Max Damage", "78"),
-        ("Min Gold", "0"),
-        ("Max Gold", "1"),
+        ("Max Damage", "157"),
+        ("Min Gold", "50"),
+        ("Max Gold", "1100"),
         ("Iterations", "5000")
     ]
 

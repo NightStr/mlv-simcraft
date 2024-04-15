@@ -62,7 +62,7 @@ def format_thieve_results(results: list[ThievingSimResult]) -> str:
     sims_money_earned = [s.money_earned for s in results]
 
     mean_time = sec_to_time(int(np.mean(sims_seconds)))
-    mean_money_earned = int(np.mean(sims_seconds))
+    mean_money_earned = int(np.mean(sims_money_earned))
 
     min_mean_time = sec_to_time(int(np.mean(sorted(sims_seconds)[:100])))
     min_money_earned = int(np.mean(sum(sorted(sims_money_earned)[:100])))
