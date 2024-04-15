@@ -97,9 +97,6 @@ def format_fighting_results(results: list[FightingSimResult]) -> str:
 
 if __name__ == "__main__":
     # Running the simulation multiple times
-    num_simulations = 5000
-    simulations_time_results = []
-    enemy_killed = []
     config = FightingSimConfig(
         player_health=720,
         player_health_regen=8,
@@ -115,6 +112,6 @@ if __name__ == "__main__":
         enemy_attack_interval=2.4,
     )
     results = []
-    for _ in tqdm(range(num_simulations)):
+    for _ in tqdm(range(5_000), desc="Fight simulation"):
         results.append(simulate_battle(config))
     print(format_fighting_results(results))

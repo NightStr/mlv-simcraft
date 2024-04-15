@@ -2,6 +2,7 @@ import random
 import decimal
 from typing import NamedTuple
 
+import numpy as np
 from tqdm import tqdm
 
 from core import sec_to_time
@@ -60,14 +61,14 @@ def format_thieve_results(results: list[ThievingSimResult]) -> str:
     sims_seconds = [s.time for s in results]
     sims_money_earned = [s.money_earned for s in results]
 
-    mean_time = sec_to_time(int(sum(sims_seconds) / len(sims_seconds)))
-    mean_money_earned = int(sum(sims_money_earned) / len(sims_money_earned))
+    mean_time = sec_to_time(int(np.mean(sims_seconds)))
+    mean_money_earned = int(np.mean(sims_seconds))
 
-    min_mean_time = sec_to_time(int(sum(sorted(sims_seconds)[:100]) / 100))
-    min_money_earned = int(sum(sorted(sims_money_earned)[:100]) / 100)
+    min_mean_time = sec_to_time(int(np.mean(sorted(sims_seconds)[:100])))
+    min_money_earned = int(np.mean(sum(sorted(sims_money_earned)[:100])))
 
-    max_mean_time = sec_to_time(int(sum(list(reversed(sorted(sims_seconds)))[:100]) / 100))
-    max_money_earned = int(sum(list(reversed(sorted(sims_money_earned)))[:100]) / 100)
+    max_mean_time = sec_to_time(int(np.mean(list(reversed(sorted(sims_seconds)))[:100])))
+    max_money_earned = int(np.mean(list(reversed(sorted(sims_money_earned)))[:100]))
 
     # Очистка виджета вывода и вывод результатов
     return (
@@ -94,6 +95,6 @@ if __name__ == '__main__':
         max_gold=1,
     )
     sims = []
-    for _ in tqdm(range(5_000), desc="Simulations"):
+    for _ in tqdm(range(5_000), desc="Thieving simulation"):
         sims.append(sim(config))
     print(format_thieve_results(sims))
