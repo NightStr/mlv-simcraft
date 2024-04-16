@@ -50,7 +50,6 @@ class BaseTkView:
         if file_name:
             try:
                 self.save_defaults(file_name)
-                messagebox.showinfo("Информация", "Файл успешно сохранен!")
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Не удалось сохранить файл: {e}")
 
@@ -63,7 +62,6 @@ class BaseTkView:
         if file_name:
             try:
                 self.load_defaults(file_name)
-                messagebox.showinfo("Информация", "Файл успешно загружен!")
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Не удалось загрузить файл: {e}")
 
