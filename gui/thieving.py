@@ -22,6 +22,7 @@ class ThievingSimulationApp(BaseTkView):
         "Max Gold": "1100",
         "Iterations": "5000",
     }
+    DEFAULTEXTENSION = 'thsave'
 
     def start_simulation_thread(self):
         if not self.running:

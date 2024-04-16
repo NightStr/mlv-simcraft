@@ -8,6 +8,7 @@ from tkinter import ttk, filedialog, messagebox
 class BaseTkView:
     TITLE: str = "Simulation GUI"
     DEFAULTS: dict[str, str] = {}
+    DEFAULTEXTENSION = 'json'
 
     def __init__(self, root):
         self.entries: dict[str, tk.Entry] = {}
@@ -45,7 +46,8 @@ class BaseTkView:
         self.create_saves_dir()
         file_name = filedialog.asksaveasfilename(
             initialdir="./saves/",
-            defaultextension=".json", filetypes=[("saves", "*.json"), ("All files", "*.*")]
+            defaultextension=f".{self.DEFAULTEXTENSION}",
+            filetypes=[("saves", f"*.{self.DEFAULTEXTENSION}"), ("All files", "*.*")]
         )
         if file_name:
             try:
@@ -57,7 +59,9 @@ class BaseTkView:
         self.create_saves_dir()
         file_name = filedialog.askopenfilename(
             initialdir="./saves/",
-            filetypes=[("Save files", "*.json"), ("All files", "*.*")]
+            filetypes=[
+                ("Save files", f"*.{self.DEFAULTEXTENSION}"), ("All files", "*.*")
+            ]
         )
         if file_name:
             try:

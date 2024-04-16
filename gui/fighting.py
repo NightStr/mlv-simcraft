@@ -25,6 +25,7 @@ class FightingSimulationApp(BaseTkView):
         "Enemy Attack Interval": "2.4",
         "Iterations": "5000",
     }
+    DEFAULTEXTENSION = 'fsave'
 
     def start_simulation_thread(self):
         if not self.running:
