@@ -93,12 +93,12 @@ class BaseTkView:
     def save_defaults(self, file_name: str | None = None):
         self.create_saves_dir()
         self.update_defaults()
-        file_name = file_name or f"saves/{self.__class__.__name__}_defaults.json"
+        file_name = file_name or f"saves/{self.__class__.__name__}_defaults.{self.DEFAULTEXTENSION}"
         with open(file_name, "w") as defaults_file:
             json.dump(self.DEFAULTS, defaults_file)
 
     def load_defaults(self, file_name: str | None = None):
-        file_name = file_name or f"saves/{self.__class__.__name__}_defaults.json"
+        file_name = file_name or f"saves/{self.__class__.__name__}_defaults.{self.DEFAULTEXTENSION}"
         with suppress(FileNotFoundError):
             with open(file_name, "r") as defaults_file:
                 loaded_defaults = json.load(defaults_file)
