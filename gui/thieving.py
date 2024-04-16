@@ -9,7 +9,7 @@ from sims.thieving import sim, ThievingSimConfig, ThievingSimResult, format_thie
 
 
 class ThievingSimulationApp(BaseTkView):
-    TITLE = "Thieve Simulation GUI"
+    TITLE = "Thieving Simulation GUI"
     DEFAULTS = {
         "Health Regeneration Interval": "8",
         "Health Regeneration Amount": "8",
