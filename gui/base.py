@@ -2,7 +2,7 @@ import json
 import os
 import tkinter as tk
 from contextlib import suppress
-from tkinter import ttk
+from tkinter import ttk, filedialog, messagebox
 
 
 class BaseTkView:
@@ -10,6 +10,7 @@ class BaseTkView:
     DEFAULTS: dict[str, str] = {}
 
     def __init__(self, root):
+        self.entries: dict[str, tk.Entry] = {}
         self.load_defaults()
         self.root = root
         self.root.title(self.TITLE)
@@ -38,16 +39,71 @@ class BaseTkView:
         self.running = False
         self.thread = None
         root.protocol("WM_DELETE_WINDOW", self.destroy_root(root))
+        self.create_menu(root)
+
+    def save_data(self):
+        self.create_saves_dir()
+        file_name = filedialog.asksaveasfilename(
+            initialdir="./saves/",
+            defaultextension=".json", filetypes=[("saves", "*.json"), ("All files", "*.*")]
+        )
+        if file_name:
+            try:
+                self.save_defaults(file_name)
+                messagebox.showinfo("Информация", "Файл успешно сохранен!")
+            except Exception as e:
+                messagebox.showerror("Ошибка", f"Не удалось сохранить файл: {e}")
+
+    def load_data(self):
+        self.create_saves_dir()
+        file_name = filedialog.askopenfilename(
+            initialdir="./saves/",
+            filetypes=[("Save files", "*.json"), ("All files", "*.*")]
+        )
+        if file_name:
+            try:
+                self.load_defaults(file_name)
+                messagebox.showinfo("Информация", "Файл успешно загружен!")
+            except Exception as e:
+                messagebox.showerror("Ошибка", f"Не удалось загрузить файл: {e}")
+
+    def create_menu(self, window):
+        menu_bar = tk.Menu(window)
+        file_menu = tk.Menu(menu_bar, tearoff=0)
+        file_menu.add_command(label="Сохранить", command=self.save_data)
+        file_menu.add_command(label="Загрузить", command=self.load_data)
+        menu_bar.add_cascade(label="Файл", menu=file_menu)
+        window.config(menu=menu_bar)
 
     def update_defaults(self):
         for key, value in self.DEFAULTS.items():
             self.DEFAULTS[key] = self.entries[key].get()
 
-    def save_defaults(self):
-        self.update_defaults()
+    def update_entries(self):
+        for key, value in self.DEFAULTS.items():
+            if entry := self.entries.get(key):
+                entry.delete(0, tk.END)
+                entry.insert(0, self.DEFAULTS[key])
+
+    def create_saves_dir(self):
         os.makedirs('saves', exist_ok=True)
-        with open(f"saves/{self.__class__.__name__}_defaults.json", "w") as defaults_file:
+
+    def save_defaults(self, file_name: str | None = None):
+        self.create_saves_dir()
+        self.update_defaults()
+        file_name = file_name or f"saves/{self.__class__.__name__}_defaults.json"
+        with open(file_name, "w") as defaults_file:
             json.dump(self.DEFAULTS, defaults_file)
+
+    def load_defaults(self, file_name: str | None = None):
+        file_name = file_name or f"saves/{self.__class__.__name__}_defaults.json"
+        with suppress(FileNotFoundError):
+            with open(file_name, "r") as defaults_file:
+                loaded_defaults = json.load(defaults_file)
+            for k, v in loaded_defaults.items():
+                if k in self.DEFAULTS:
+                    self.DEFAULTS[k] = v
+        self.update_entries()
 
     def destroy_root(self, root):
         def destroy_fn():
@@ -56,13 +112,7 @@ class BaseTkView:
 
         return destroy_fn
 
-    def load_defaults(self):
-        with suppress(FileNotFoundError):
-            with open(f"saves/{self.__class__.__name__}_defaults.json", "r") as defaults_file:
-                self.DEFAULTS = json.load(defaults_file)
-
     def setup_input_fields(self):
-        self.entries = {}
         for idx, (label, value) in enumerate(self.DEFAULTS.items()):
             label = ttk.Label(self.main_frame, text=f"{label}:")
             label.grid(column=0, row=idx, sticky=tk.W, pady=2)
