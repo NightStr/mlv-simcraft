@@ -1,69 +1,30 @@
+import json
 import os
 import tkinter as tk
-from tkinter import ttk
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from threading import Thread
 
-from core import sec_to_time
+from gui.base import BaseTkView
 from sims.fighting import simulate_battle, FightingSimConfig, FightingSimResult, format_fighting_results
 
 
-class App:
+class FightingSimulationApp(BaseTkView):
     TITLE = "Fighting Simulation GUI"
-    LABELS = [
-        ("Player Health", "720"),
-        ("Player Health Regen", "8"),
-        ("Player Regen Interval", "8"),
-        ("Player Damage Min", "1"),
-        ("Player Damage Max", "111"),
-        ("Player Hit Chance", "76"),
-        ("Player Attack Interval", "3.0"),
-        ("Enemy Health", "300"),
-        ("Enemy Damage Min", "0"),
-        ("Enemy Damage Max", "116"),
-        ("Enemy Hit Chance", "35"),
-        ("Enemy Attack Interval", "2.4"),
-        ("Iterations", "5000")
-    ]
-
-    def __init__(self, root):
-        self.root = root
-        self.root.title(self.TITLE)
-        self.root.resizable(False, False)
-
-        # Main frame setup
-        self.main_frame = ttk.Frame(self.root, padding="10 10 10 10")
-        self.main_frame.grid(column=0, row=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-
-        self.root.columnconfigure(0, weight=1)
-        self.root.rowconfigure(0, weight=1)
-        self.main_frame.columnconfigure(1, weight=1)
-        self.main_frame.rowconfigure(0, weight=1)
-
-        # Input fields and result display
-        self.setup_input_fields()
-
-        self.result_text = tk.Text(self.main_frame, width=40, height=10)
-        self.result_text.grid(column=2, row=0, rowspan=13, padx=10, sticky=(tk.N, tk.S, tk.E, tk.W))
-
-        self.progress = ttk.Progressbar(self.main_frame, orient='horizontal', length=200, mode='determinate')
-        self.progress.grid(column=0, row=13, columnspan=3, sticky=(tk.W, tk.E), pady=10)
-
-        self.start_button = ttk.Button(self.main_frame, text="Start Simulation", command=self.start_simulation_thread)
-        self.start_button.grid(column=0, row=14, columnspan=3, sticky=(tk.W, tk.E))
-        self.running = False
-        self.thread = None
-
-    def setup_input_fields(self):
-        self.entries = {}
-        for idx, (label, value) in enumerate(self.LABELS):
-            label = ttk.Label(self.main_frame, text=f"{label}:")
-            label.grid(column=0, row=idx, sticky=tk.W, pady=2)
-
-            entry = ttk.Entry(self.main_frame, width=7)
-            entry.grid(column=1, row=idx, sticky=(tk.W, tk.E), pady=2)
-            entry.insert(0, value)
-            self.entries[label.cget("text")[:-1]] = entry
+    DEFAULTS = {
+        "Player Health": "720",
+        "Player Health Regen": "8",
+        "Player Regen Interval": "8",
+        "Player Damage Min": "1",
+        "Player Damage Max": "111",
+        "Player Hit Chance": "76",
+        "Player Attack Interval": "3.0",
+        "Enemy Health": "300",
+        "Enemy Damage Min": "0",
+        "Enemy Damage Max": "116",
+        "Enemy Hit Chance": "35",
+        "Enemy Attack Interval": "2.4",
+        "Iterations": "5000",
+    }
 
     def start_simulation_thread(self):
         if not self.running:
@@ -126,5 +87,5 @@ class App:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = App(root)
+    app = FightingSimulationApp(root)
     root.mainloop()
