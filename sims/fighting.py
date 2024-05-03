@@ -55,7 +55,7 @@ def simulate_battle(config: FightingSimConfig) -> FightingSimResult:
 
         # Health regeneration for the player
         regen_timer = regen_timer + config.player_attack_interval
-        while regen_timer >= config.player_regen_interval:
+        while player_current_health > 0 and regen_timer >= config.player_regen_interval:
             player_current_health += config.player_health_regen
             regen_timer -= config.player_regen_interval
 
