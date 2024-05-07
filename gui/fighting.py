@@ -1,4 +1,4 @@
-import json
+import decimal
 import os
 import tkinter as tk
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -46,12 +46,12 @@ class FightingSimulationApp(BaseTkView):
             player_damage_min=int(self.entries["Player Damage Min"].get()),
             player_damage_max=int(self.entries["Player Damage Max"].get()),
             player_hit_chance=float(self.entries["Player Hit Chance"].get()) / 100,
-            player_attack_interval=float(self.entries["Player Attack Interval"].get()),
+            player_attack_interval=decimal.Decimal(self.entries["Player Attack Interval"].get()),
             enemy_health=int(self.entries["Enemy Health"].get()),
             enemy_damage_min=int(self.entries["Enemy Damage Min"].get()),
             enemy_damage_max=int(self.entries["Enemy Damage Max"].get()),
             enemy_hit_chance=float(self.entries["Enemy Hit Chance"].get()) / 100,
-            enemy_attack_interval=float(self.entries["Enemy Attack Interval"].get())
+            enemy_attack_interval=decimal.Decimal(self.entries["Enemy Attack Interval"].get())
         )
 
     def start_simulation(self):
